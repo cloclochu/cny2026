@@ -5,6 +5,15 @@ import clientPromise from '@/lib/mongodb';
 export async function POST(request) {
   try {
     const { username, password } = await request.json();
+    const normalizedUsername = String(username || '').trim().toLowerCase();
+    const allowedUsers = new Set(['yan', 'fang', 'shi', 'mathilde']);
+
+    if (!allowedUsers.has(normalizedUsername)) {
+      return NextResponse.json(
+        { error: 'Nom non autorisé' },
+        { status: 403 }
+      );
+    }
 
     // Simple password check
     if (password !== 'chunjie2026') {
@@ -20,12 +29,12 @@ export async function POST(request) {
     const users = db.collection('users');
 
     // Check if user exists
-    let user = await users.findOne({ username: username });
+    let user = await users.findOne({ username: normalizedUsername });
 
     if (!user) {
       // Create new user if doesn't exist
       const newUser = {
-        username: username,
+        username: normalizedUsername,
         createdAt: new Date(),
         lastLogin: new Date()
       };
