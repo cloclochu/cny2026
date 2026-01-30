@@ -45,31 +45,52 @@ export default function MenuPage() {
       nameCN: '韭菜猪肉饺子',
       nameFR: 'Raviolis poireaux et porc',
       description: 'Raviolis faits maison farcis de poireaux et porc'
+    },
+    {
+      id: 'spring-rolls',
+      emoji: '🌯',
+      nameCN: '春卷',
+      nameFR: 'Rouleaux de printemps',
+      description: 'Rouleaux de printemps croustillants faits maison'
     }
   ];
 
-  const handleSubmitProposal = () => {
+  const handleSubmitProposal = async () => {
     if (!dishProposal.trim()) {
-      alert('Merci de décrire ton plat !');
+      alert('请先写下你想分享的菜～');
       return;
     }
 
     const optionText = dishOption === 'apporter' 
-      ? "Je vais l'apporter moi-même" 
-      : "À ajouter à la liste de courses de Chloe";
+      ? '我会自己准备并带来' 
+      : '请加入 Chloe 的采购清单';
 
-    const subject = `Proposition de plat - ${currentUser}`;
-    const body = `Nom: ${currentUser}\n\nPlat proposé: ${dishProposal}\n\nOption: ${optionText}`;
-    
-    window.location.href = `mailto:yiching.uhc@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
-    setShowSuccess(true);
-    setDishProposal('');
-    setDishOption('apporter');
-    
-    setTimeout(() => {
-      setShowSuccess(false);
-    }, 3000);
+    try {
+      const response = await fetch('/api/menu/propose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: currentUser || '匿名',
+          dish: dishProposal,
+          option: optionText,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Email send failed');
+      }
+
+      setShowSuccess(true);
+      setDishProposal('');
+      setDishOption('apporter');
+
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
+    } catch (error) {
+      console.error(error);
+      alert('发送失败，请稍后再试～');
+    }
   };
 
   return (
@@ -116,7 +137,7 @@ export default function MenuPage() {
 
       {/* User badge */}
       {currentUser && (
-        <div className="fixed top-4 right-4 lg:top-8 lg:right-8 z-50 animate-fadeIn">
+        <div className="fixed top-4 right-4 lg:top-8 lg:right-8 z-50 animate-fadeIn cursor-horse">
           <div className="group relative">
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
             <div className="relative bg-gradient-to-br from-red-900/90 to-amber-900/90 backdrop-blur-sm border-2 border-yellow-500/60 rounded-full px-4 lg:px-6 py-2 lg:py-3 shadow-lg flex items-center gap-2 lg:gap-3">
@@ -178,10 +199,10 @@ export default function MenuPage() {
             <div className="relative">
               <div className="text-center mb-8">
                 <h2 className="text-3xl lg:text-4xl font-black text-yellow-200 mb-3">
-                  Propose un plat !
+                  分享一道菜吧
                 </h2>
                 <p className="text-lg text-amber-100">
-                  Tu as une idée de plat à partager ? 🍜
+                  如果你有想带来的菜，欢迎告诉我～🍜
                 </p>
               </div>
 
@@ -189,12 +210,12 @@ export default function MenuPage() {
                 {/* Dish input */}
                 <div>
                   <label className="block text-yellow-200 font-semibold mb-3 text-lg">
-                    Décris ton plat
+                    你想分享的菜
                   </label>
                   <textarea
                     value={dishProposal}
                     onChange={(e) => setDishProposal(e.target.value)}
-                    placeholder="Ex: Salade de concombre épicée, Poulet kung pao, etc."
+                    placeholder="例：凉拌黄瓜、宫保鸡丁、红烧狮子头..."
                     rows={4}
                     className="w-full px-4 py-3 rounded-xl bg-black/50 border-2 border-yellow-600/40 text-yellow-100 placeholder-yellow-600/50 focus:border-yellow-500 focus:outline-none transition-all resize-none"
                   />
@@ -203,7 +224,7 @@ export default function MenuPage() {
                 {/* Options */}
                 <div>
                   <label className="block text-yellow-200 font-semibold mb-3 text-lg">
-                    Comment ça marche ?
+                    你打算怎么准备？
                   </label>
                   <div className="space-y-3">
                     <button
@@ -218,10 +239,10 @@ export default function MenuPage() {
                         <span className="text-2xl">🎒</span>
                         <div className="flex-1">
                           <p className={`font-bold text-lg ${dishOption === 'apporter' ? 'text-red-950' : 'text-yellow-200'}`}>
-                            Je l&apos;apporte moi-même
+                            我自己准备并带来
                           </p>
                           <p className={`text-sm ${dishOption === 'apporter' ? 'text-red-900' : 'text-amber-200'}`}>
-                            Je prépare et j&apos;apporte le plat
+                            我会准备好并带到现场
                           </p>
                         </div>
                         {dishOption === 'apporter' && <span className="text-2xl">✓</span>}
@@ -240,10 +261,10 @@ export default function MenuPage() {
                         <span className="text-2xl">🛒</span>
                         <div className="flex-1">
                           <p className={`font-bold text-lg ${dishOption === 'liste' ? 'text-red-950' : 'text-yellow-200'}`}>
-                            Ajouter à la liste de Chloe
+                            加入 Chloe 的采购清单
                           </p>
                           <p className={`text-sm ${dishOption === 'liste' ? 'text-red-900' : 'text-amber-200'}`}>
-                            Chloe achètera les ingrédients
+                            Chloe 会采购食材
                           </p>
                         </div>
                         {dishOption === 'liste' && <span className="text-2xl">✓</span>}
@@ -257,7 +278,7 @@ export default function MenuPage() {
                   onClick={handleSubmitProposal}
                   className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-black text-xl py-4 px-6 rounded-xl shadow-lg hover:shadow-green-500/50 transition-all duration-300 hover:scale-105 active:scale-95"
                 >
-                  ✅ Valider ma proposition
+                  ✅ 提交我的提议
                 </button>
               </div>
             </div>
@@ -270,8 +291,8 @@ export default function MenuPage() {
                 <div className="flex items-center gap-4">
                   <span className="text-4xl">✅</span>
                   <div>
-                    <p className="text-xl font-black">Merci !</p>
-                    <p className="text-sm">Chloe a été notifiée 🎊</p>
+                    <p className="text-xl font-black">已通知 Chloe ✅</p>
+                    <p className="text-sm">她会尽快回复你的提议</p>
                   </div>
                 </div>
               </div>

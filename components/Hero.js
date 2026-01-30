@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Hero() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,41 +33,36 @@ export default function Hero() {
   }, []);
 
   const hosts = [
-    { id: 'host1', name: 'Ludovic', image: '/images/ludovic.jpg' },
-    { id: 'host2', name: 'Chloe', image: '/images/chloe.jpg' },
-    { id: 'host3', name: 'Estelle', image: '/images/estelle.jpg' }
+    { id: 'host1', name: 'Ludovic', image: '/Ludovic.jpg' },
+    { id: 'host2', name: 'Chloe', image: '/Chloe.jpg' },
+    { id: 'host3', name: 'Estelle', image: '/Estelle.jpg' }
   ];
 
   const invites = [
-    { id: '1', name: 'Julie', image: '/images/julie.jpg' },
-    { id: '2', name: 'Pierre', image: '/images/pierre.jpg' },
-    { id: '3', name: 'Jessica', image: '/images/jessica.jpg' },
-    { id: '4', name: 'Mia', image: '/images/mia.jpg' },
-    { id: '5', name: 'Thibault', image: '/images/thibault.jpg' },
-    { id: '6', name: 'Roza', image: '/images/roza.jpg' },
-    { id: '7', name: 'Benjamin', image: '/images/benjamin.jpg' },
-    { id: '8', name: 'Lilia', image: '/images/lilia.jpg' },
-    { id: '9', name: 'Diliana', image: '/images/diliana.jpg' },
-    { id: '10', name: 'Michael', image: '/images/michael.jpg' },
+    { id: '1', name: '方圆', image: '/fangyuan.PNG' },
+    { id: '2', name: 'Maxime', image: '/maxime.PNG' },
+    { id: '3', name: 'Danaë', image: '/danae.PNG' },
+    { id: '4', name: 'Mary', image: '/mary.PNG' },
+    { id: '5', name: 'Margot', image: '/margot.PNG' },
+    { id: '6', name: '闫晗', image: '/yanhan.PNG' },
+    { id: '7', name: 'Nicolas', image: '/nicolas.PNG' },
+    { id: '8', name: 'Léa', image: '/lea.PNG' },
   ];
 
   const ateliers = [
-    { id: 'dumplings', emoji: '🥟', titleFr: 'Raviolis', time: '14h00 - 16h00', description: 'Apprenons ensemble à faire des raviolis traditionnels.' },
-    { id: 'spring-rolls', emoji: '🌯', titleFr: 'Rouleaux de printemps', time: '15h00 - 17h00', description: 'Maîtrise l\'art du rouleau parfait.' },
-    { id: 'prep', emoji: '🔪', titleFr: 'Préparation', time: '13h00 - 15h00', description: 'Préparation des ingrédients.' },
-    { id: 'dessert', emoji: '🍡', titleFr: 'Desserts', time: '16h00 - 18h00', description: 'Tangyuan et douceurs.' }
+    { id: 'dumplings', emoji: '🥟', titleFr: 'Raviolis', description: 'Apprenons ensemble à faire des raviolis traditionnels.' },
+    { id: 'spring-rolls', emoji: '🌯', titleFr: 'Rouleaux de printemps', description: 'Maîtrise l\'art du rouleau parfait.' },
+    { id: 'dessert', emoji: '🍡', titleFr: 'Desserts', description: 'Tangyuan et douceurs.' }
   ];
 
   const activities = [
-    { id: 'zoo', emoji: '🦁', titleFr: 'Zoo de Thoiry', description: 'Balade digestive au zoo !', price: '~20€/personne' },
-    { id: 'walk', emoji: '🌳', titleFr: 'Balade en forêt', description: 'Promenade tranquille.', price: 'Gratuit' }
+    { id: 'zoo', emoji: '🦁', titleFr: 'Zoo de Thoiry', description: 'Balade digestive au zoo !', price: 'Dimanche 15 février' },
   ];
 
   const games = [
-    { id: 'mahjong', emoji: '🀄', titleFr: 'Mahjong', description: 'Mahjong classique.', difficulty: 'Tous niveaux' },
-    { id: 'boardgames', emoji: '🎲', titleFr: 'Jeux de société', description: 'Loup-garou, etc.', difficulty: 'Facile' },
-    { id: 'karaoke', emoji: '🎤', titleFr: 'Karaoké', description: 'Chansons...', difficulty: 'Courage requis 😂' },
-    { id: 'cards', emoji: '🃏', titleFr: 'Jeux de cartes', description: 'Jeux de cartes.', difficulty: 'Tous niveaux' }
+    { id: 'billiards', emoji: '🎱', titleFr: 'Billard', description: 'Partie libre.', difficulty: 'Tous niveaux' },
+    { id: 'switch', emoji: '🎮', titleFr: 'Nintendo Switch', description: 'Mario Kart, etc.', difficulty: 'Facile' },
+    { id: 'karaoke', emoji: '🎤', titleFr: 'Karaoké', description: 'Chansons...', difficulty: 'Courage requis 😂' }
   ];
 
   const handleLogin = async (e) => {
@@ -125,12 +121,51 @@ export default function Hero() {
       alert('Merci de remplir le champ !');
       return;
     }
-    const subject = `Nouvelle proposition ${type} - ${currentUser}`;
-    const body = `Nom: ${currentUser}\n${type}: ${proposal}`;
-    window.location.href = `mailto:yiching.uhc@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setProposal('');
-    setShowForm(false);
-    alert('Merci ! Votre proposition a été envoyée.');
+    try {
+      const response = await fetch('/api/propose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: currentUser || '匿名',
+          type,
+          proposal,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Email send failed');
+      }
+
+      setProposal('');
+      setShowForm(false);
+      alert('已通知 Chloe，她会尽快回复你的提议～');
+    } catch (error) {
+      console.error(error);
+      alert('发送失败，请稍后再试～');
+    }
+  };
+
+  const handleChildcareInterest = async () => {
+    try {
+      const response = await fetch('/api/propose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: currentUser || '匿名',
+          type: 'Garde d\'enfants',
+          proposal: 'Intéressé(e) par le service de garde d\'enfants.',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Email send failed');
+      }
+
+      alert('Merci ! Chloe te recontactera pour organiser la garde 👶');
+    } catch (error) {
+      console.error(error);
+      alert('发送失败，请稍后再试～');
+    }
   };
 
   const handleValidateSelections = (type) => {
@@ -258,7 +293,7 @@ export default function Hero() {
 
       {/* User badge - only when logged in */}
       {isLoggedIn && (
-        <div className="fixed top-4 right-4 lg:top-8 lg:right-8 z-50 animate-fadeIn">
+        <div className="fixed top-4 right-4 lg:top-8 lg:right-8 z-50 animate-fadeIn cursor-horse">
           <div className="group relative">
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
             <div className="relative bg-gradient-to-br from-red-900/90 to-amber-900/90 backdrop-blur-sm border-2 border-yellow-500/60 rounded-full px-4 lg:px-6 py-2 lg:py-3 shadow-lg flex items-center gap-2 lg:gap-3">
@@ -319,12 +354,16 @@ export default function Hero() {
                           <p className="text-2xl lg:text-3xl font-black text-yellow-50">Samedi 14 Février</p>
                           <p className="text-lg lg:text-xl text-yellow-200/80">2026</p>
                           <div className="inline-block px-4 py-2 rounded-full bg-red-900/40 border border-yellow-500/30 mt-2">
-                            <p className="text-sm lg:text-base text-amber-200">农历正月十八</p>
+                            <p className="text-sm lg:text-base text-amber-200">伪除夕夜</p>
                           </div>
                         </div>
-                        <button className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-red-950 font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 active:scale-95 text-sm lg:text-base">
+                        <a
+                          href="/chunjie-2026.ics"
+                          download
+                          className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-red-950 font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 active:scale-95 text-sm lg:text-base inline-flex items-center justify-center"
+                        >
                           📲 Ajouter au calendrier
-                        </button>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -339,14 +378,19 @@ export default function Hero() {
                         <h3 className="text-xl lg:text-2xl font-bold text-yellow-200 mb-4 tracking-wide">OÙ ?</h3>
                         <div className="space-y-2 mb-6">
                           <p className="text-xl lg:text-2xl font-bold text-yellow-50">20 rue de la Haie Boulland</p>
-                          <p className="text-lg lg:text-xl text-yellow-200/80">78930 Guerville</p>
+                          <p className="text-lg lg:text-xl text-yellow-200/80">78930, Auffreville-Brasseuil</p>
                           <div className="inline-block px-4 py-2 rounded-full bg-red-900/40 border border-red-500/30 mt-2">
                             <p className="text-sm lg:text-base text-amber-200">🚗 30 min de Paris</p>
                           </div>
                         </div>
-                        <button className="w-full bg-gradient-to-r from-red-600 to-red-700 text-yellow-100 font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 active:scale-95 text-sm lg:text-base">
+                        <a
+                          href="https://www.google.com/maps/search/?api=1&query=20%20rue%20de%20la%20Haie%20Boulland%2C%2078930%20Auffreville-Brasseuil%2C%20France"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full bg-gradient-to-r from-red-600 to-red-700 text-yellow-100 font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 active:scale-95 text-sm lg:text-base inline-flex items-center justify-center"
+                        >
                           🗺️ Voir l&apos;itinéraire
-                        </button>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -379,9 +423,12 @@ export default function Hero() {
                     <span className="block font-bold text-yellow-300 text-base lg:text-xl mt-2 lg:mt-4">一起分担,一起热闹,年味直接翻倍 🏮🧨</span>
                   </p>
                 </div>
-                <button className="w-full bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 text-red-950 font-black text-lg lg:text-xl py-3 lg:py-4 px-6 lg:px-8 rounded-xl shadow-lg hover:shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 active:scale-95 hover:scale-105">
+                <Link
+                  href="/menus"
+                  className="w-full bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 text-red-950 font-black text-lg lg:text-xl py-3 lg:py-4 px-6 lg:px-8 rounded-xl shadow-lg hover:shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 active:scale-95 hover:scale-105 inline-flex items-center justify-center"
+                >
                   🍽️ 看看准备了啥菜 | Voir le menu
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -420,9 +467,6 @@ export default function Hero() {
                               <h4 className={`text-lg font-bold ${isSelected ? 'text-red-950' : 'text-yellow-200'}`}>
                                 {atelier.titleFr}
                               </h4>
-                              <p className={`text-sm ${isSelected ? 'text-red-900' : 'text-amber-200'}`}>
-                                {atelier.time}
-                              </p>
                             </div>
                           </div>
                           {isSelected && <span className="text-2xl">✓</span>}
@@ -484,7 +528,43 @@ export default function Hero() {
                 )}
               </div>
             </div>
+{/* CHILDCARE SECTION */}
+<div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-red-950/70 to-amber-950/70 backdrop-blur-md border-2 border-red-500/40 shadow-2xl">
+  <div className="p-6 lg:p-10">
+    <div className="flex items-center gap-4 mb-6">
+      <span className="text-4xl lg:text-5xl">👶</span>
+      <div>
+        <h3 className="text-3xl lg:text-4xl font-black text-yellow-200">Garde d&apos;enfants</h3>
+        <p className="text-base lg:text-lg text-amber-200">保姆服务 • Service optionnel</p>
+      </div>
+    </div>
 
+    <div className="bg-black/30 rounded-xl p-6 mb-4 border border-yellow-600/20">
+      <div className="flex items-start gap-4">
+        <span className="text-3xl">💰</span>
+        <div>
+          <h4 className="text-xl font-bold text-yellow-200 mb-2">
+            Nounou professionnelle disponible
+          </h4>
+          <p className="text-amber-100 text-base lg:text-lg">
+            <span className="font-bold text-yellow-300">18€/heure</span> • Une nounou peut s&apos;occuper de 3 enfants
+          </p>
+          <p className="text-red-100 text-sm mt-2">
+            💡 Coût partagé entre toutes les familles intéressées
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <button
+      onClick={handleChildcareInterest}
+      className="w-full bg-gradient-to-r from-amber-700 to-orange-700 text-yellow-100 font-bold py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-300 active:scale-95"
+    >
+      ✉️ Je suis intéressé(e)
+    </button>
+
+  </div>
+</div>
             {/* ACTIVITIES */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-red-950/70 to-amber-950/70 backdrop-blur-md border-2 border-red-500/40 shadow-2xl">
               <div className="p-6 lg:p-10">
@@ -526,6 +606,20 @@ export default function Hero() {
                         <p className={`text-sm ${isSelected ? 'text-red-950/90' : 'text-red-100'}`}>
                           {activity.description}
                         </p>
+                        {activity.id === 'zoo' && (
+                          <a
+                            href="https://www.thoiry.net/tarifs/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`mt-3 inline-flex items-center justify-center text-sm font-bold rounded-lg px-3 py-2 transition-all duration-300 ${
+                              isSelected
+                                ? 'bg-red-900/20 text-red-950 border border-red-900/30'
+                                : 'bg-black/30 text-yellow-100 border border-yellow-600/30 hover:border-yellow-500/60'
+                            }`}
+                          >
+                            🎫 Voir les tarifs
+                          </a>
+                        )}
                       </button>
                     );
                   })}
@@ -715,7 +809,7 @@ export default function Hero() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4 lg:gap-6">
               {invites.map((invite, index) => (
                 <div 
                   key={invite.id}
