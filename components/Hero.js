@@ -264,7 +264,6 @@ export default function Hero() {
                   春节聚会
                 </h2>
                 <p className="text-yellow-100 text-lg">Connecte-toi pour continuer</p>
-                <p className="text-yellow-200/60 text-sm mt-2">Tu peux voir le contenu en arrière-plan 👀</p>
               </div>
 
               <form onSubmit={handleLogin} className="space-y-6">
