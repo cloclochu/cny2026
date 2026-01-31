@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function MenuPage() {
+  const router = useRouter();
   const [currentUser, setCurrentUser] = useState('');
   const [dishProposal, setDishProposal] = useState('');
   const [dishOption, setDishOption] = useState('apporter'); // 'apporter' or 'liste'
@@ -16,6 +18,15 @@ export default function MenuPage() {
       setCurrentUser(username);
     }
   }, []);
+
+  const handleLogout = () => {
+    if (confirm('确定要退出登录吗？')) {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('username');
+      setCurrentUser('');
+      router.push('/');
+    }
+  };
 
   const dishes = [
     {
@@ -145,6 +156,14 @@ export default function MenuPage() {
                 {currentUser.charAt(0).toUpperCase()}
               </div>
               <span className="text-yellow-100 font-bold text-base lg:text-lg hidden sm:inline">{currentUser}</span>
+              <button
+                onClick={handleLogout}
+                className="ml-1 lg:ml-2 text-red-300 hover:text-red-100 transition-colors text-lg lg:text-xl cursor-pointer"
+                title="退出登录"
+                type="button"
+              >
+                🚪
+              </button>
             </div>
           </div>
         </div>
@@ -159,11 +178,11 @@ export default function MenuPage() {
             <div className="inline-flex items-center gap-4 mb-6 flex-wrap justify-center">
               <span className="text-5xl lg:text-6xl">🍽️</span>
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black bg-gradient-to-r from-yellow-200 via-amber-100 to-red-200 bg-clip-text text-transparent drop-shadow-2xl">
-                年夜菜
+                年夜饭
               </h1>
               <span className="text-5xl lg:text-6xl">🥘</span>
             </div>
-            <p className="text-xl lg:text-2xl text-yellow-100 font-light">Le Menu du Réveillon</p>
+            <p className="text-xl lg:text-2xl text-yellow-100 font-light">Le Dîner du Réveillon</p>
           </div>
 
           {/* Dishes Grid */}

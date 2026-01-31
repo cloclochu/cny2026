@@ -415,7 +415,7 @@ export default function Hero() {
                     <h2 className="text-2xl lg:text-4xl font-black text-yellow-200 mb-2 lg:mb-3 leading-tight">
                       Préparons le dîner ensemble !
                     </h2>
-                    <p className="text-lg lg:text-xl text-amber-100 font-medium">或者不一起也行 😆</p>
+                    <p className="text-lg lg:text-xl text-amber-100 font-medium">...ou pas!  😆</p>
                   </div>
                 </div>
                 <div className="bg-black/30 rounded-2xl p-4 lg:p-6 mb-6 border border-yellow-600/20">
