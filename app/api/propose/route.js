@@ -43,18 +43,27 @@ export async function POST(request) {
     const subject = `新提议 - ${typeText} - ${name}`;
     const text = `来自: ${name}\n\n类型: ${typeText}\n\n内容: ${proposalText}`;
 
-    await transporter.sendMail({
-      from: SMTP_USER,
-      to: 'yiching.uhc@gmail.com',
-      subject,
-      text,
-    });
+    try {
+      await transporter.sendMail({
+        from: SMTP_USER,
+        to: 'yiching.uhc@gmail.com',
+        subject,
+        text,
+      });
+    } catch (mailError) {
+      console.error('Mail send error details:', {
+        error: mailError.message,
+        code: mailError.code,
+        command: mailError.command,
+      });
+      throw mailError;
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Proposal email error:', error);
+    console.error('Proposal error:', error.message || error);
     return NextResponse.json(
-      { error: 'Email send failed' },
+      { error: error.message || 'Email send failed' },
       { status: 500 }
     );
   }
