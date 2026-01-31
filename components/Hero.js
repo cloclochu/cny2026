@@ -132,16 +132,19 @@ export default function Hero() {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Email send failed');
+        console.error('API Error:', data);
+        throw new Error(data.error || 'Email send failed');
       }
 
       setProposal('');
       setShowForm(false);
       alert('已通知 Chloe，她会尽快回复你的提议～');
     } catch (error) {
-      console.error(error);
-      alert('发送失败，请稍后再试～');
+      console.error('Submit error:', error);
+      alert(`发送失败：${error.message}`);
     }
   };
 
@@ -157,14 +160,17 @@ export default function Hero() {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Email send failed');
+        console.error('API Error:', data);
+        throw new Error(data.error || 'Email send failed');
       }
 
       alert('Merci ! Chloe te recontactera pour organiser la garde 👶');
     } catch (error) {
-      console.error(error);
-      alert('发送失败，请稍后再试～');
+      console.error('Childcare error:', error);
+      alert(`发送失败：${error.message}`);
     }
   };
 
