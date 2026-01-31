@@ -179,13 +179,13 @@ export default function Hero() {
     let typeName = '';
     
     if (type === 'ateliers') {
-      selections = selectedAteliers.map(id => ateliers.find(a => a.id === id)?.titleFr);
+      selections = selectedAteliers.map(id => ateliers.find(a => a.id === id)?.titleFr).filter(Boolean);
       typeName = 'Ateliers';
     } else if (type === 'activities') {
-      selections = selectedActivities.map(id => activities.find(a => a.id === id)?.titleFr);
+      selections = selectedActivities.map(id => activities.find(a => a.id === id)?.titleFr).filter(Boolean);
       typeName = 'Activités';
     } else if (type === 'games') {
-      selections = selectedGames.map(id => games.find(g => g.id === id)?.titleFr);
+      selections = selectedGames.map(id => games.find(g => g.id === id)?.titleFr).filter(Boolean);
       typeName = 'Jeux';
     }
     
@@ -195,13 +195,14 @@ export default function Hero() {
     }
 
     try {
+      const displayName = (currentUser || '匿名').trim() || '匿名';
       const response = await fetch('/api/propose', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: currentUser || '匿名',
+          username: displayName,
           type: `${typeName} sélectionné(s)`,
-          proposal: selections.join('\n'),
+          proposal: `Nom: ${displayName}\n\n${typeName}:\n${selections.join('\n')}`,
         }),
       });
 
@@ -212,7 +213,7 @@ export default function Hero() {
         throw new Error(data.error || 'Email send failed');
       }
 
-      alert(`已通知 Chloe：${typeName} 已提交 ✅`);
+      alert(`已通知 Chloe：${displayName} 选择了 ${typeName} ✅`);
     } catch (error) {
       console.error('Selection submit error:', error);
       alert(`发送失败：${error.message}`);

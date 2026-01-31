@@ -17,19 +17,19 @@ export const metadata = {
   icons: [
     {
       rel: "icon",
-      url: "/icon-32.png",
+      url: "/vercel.png",
       sizes: "32x32",
       type: "image/png",
     },
     {
       rel: "apple-touch-icon",
-      url: "/icon-180.png",
+      url: "/vercel.png",
       sizes: "180x180",
       type: "image/png",
     },
     {
       rel: "shortcut icon",
-      url: "/icon-32.png",
+      url: "/vercel.png",
       sizes: "32x32",
       type: "image/png",
     },
