@@ -23,9 +23,23 @@ export async function POST(request) {
     } = process.env;
     const smtpPass = SMTP_PASS ? SMTP_PASS.replace(/\s+/g, '') : '';
 
+    console.log('SMTP Config Check:', {
+      SMTP_HOST: !!SMTP_HOST,
+      SMTP_PORT: !!SMTP_PORT,
+      SMTP_USER: !!SMTP_USER,
+      SMTP_PASS: !!smtpPass,
+    });
+
     if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !smtpPass) {
+      const missing = [];
+      if (!SMTP_HOST) missing.push('SMTP_HOST');
+      if (!SMTP_PORT) missing.push('SMTP_PORT');
+      if (!SMTP_USER) missing.push('SMTP_USER');
+      if (!smtpPass) missing.push('SMTP_PASS');
+      
+      console.error('Missing config:', missing);
       return NextResponse.json(
-        { error: 'Email config missing' },
+        { error: `Email config missing: ${missing.join(', ')}` },
         { status: 500 }
       );
     }
