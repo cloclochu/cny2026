@@ -6,7 +6,7 @@ export async function POST(request) {
   try {
     const { username, password } = await request.json();
     const normalizedUsername = String(username || '').trim().toLowerCase();
-    const allowedUsers = new Set(['yan', 'fang', 'shi', 'mathilde']);
+    const allowedUsers = new Set(['yan', 'fang', 'shi', 'mathilde', 'yu']);
 
     if (!allowedUsers.has(normalizedUsername)) {
       return NextResponse.json(

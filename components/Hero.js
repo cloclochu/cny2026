@@ -174,7 +174,7 @@ export default function Hero() {
     }
   };
 
-  const handleValidateSelections = (type) => {
+  const handleValidateSelections = async (type) => {
     let selections = [];
     let typeName = '';
     
@@ -193,11 +193,30 @@ export default function Hero() {
       alert('Tu n\'as rien sélectionné !');
       return;
     }
-    
-    const subject = `${typeName} sélectionné(s) - ${currentUser}`;
-    const body = `Nom: ${currentUser}\n\n${typeName}:\n${selections.join('\n')}`;
-    window.location.href = `mailto:yiching.uhc@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    alert(`Merci ! Tes ${typeName.toLowerCase()} ont été envoyé(s) ! 🎊`);
+
+    try {
+      const response = await fetch('/api/propose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: currentUser || '匿名',
+          type: `${typeName} sélectionné(s)`,
+          proposal: selections.join('\n'),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error('API Error:', data);
+        throw new Error(data.error || 'Email send failed');
+      }
+
+      alert(`已通知 Chloe：${typeName} 已提交 ✅`);
+    } catch (error) {
+      console.error('Selection submit error:', error);
+      alert(`发送失败：${error.message}`);
+    }
   };
 
   return (
