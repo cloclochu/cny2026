@@ -293,7 +293,7 @@ export default function Hero() {
 
       {/* User badge - only when logged in */}
       {isLoggedIn && (
-        <div className="fixed top-4 right-4 lg:top-8 lg:right-8 z-50 animate-fadeIn cursor-horse">
+        <div className="fixed top-4 right-4 lg:top-8 lg:right-8 z-50 animate-fadeIn pointer-events-auto">
           <div className="group relative">
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
             <div className="relative bg-gradient-to-br from-red-900/90 to-amber-900/90 backdrop-blur-sm border-2 border-yellow-500/60 rounded-full px-4 lg:px-6 py-2 lg:py-3 shadow-lg flex items-center gap-2 lg:gap-3">
@@ -303,8 +303,9 @@ export default function Hero() {
               <span className="text-yellow-100 font-bold text-base lg:text-lg hidden sm:inline">{currentUser}</span>
               <button
                 onClick={handleLogout}
-                className="ml-1 lg:ml-2 text-red-300 hover:text-red-100 transition-colors text-lg lg:text-xl"
+                className="ml-1 lg:ml-2 text-red-300 hover:text-red-100 transition-colors text-lg lg:text-xl cursor-pointer"
                 title="Se déconnecter"
+                type="button"
               >
                 🚪
               </button>
