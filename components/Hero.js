@@ -41,12 +41,12 @@ export default function Hero() {
   const invites = [
     { id: '1', name: '方圆', image: '/fangyuan.PNG' },
     { id: '2', name: 'Maxime', image: '/maxime.PNG' },
-    { id: '3', name: 'Danaë', image: '/danae.PNG' },
-    { id: '4', name: 'Mary', image: '/mary.PNG' },
-    { id: '5', name: 'Margot', image: '/margot.PNG' },
-    { id: '6', name: '闫晗', image: '/yanhan.PNG' },
-    { id: '7', name: 'Nicolas', image: '/nicolas.PNG' },
-    { id: '8', name: 'Léa', image: '/lea.PNG' },
+    { id: '3', name: 'Mary', image: '/mary.PNG' },
+    { id: '4', name: 'Margot', image: '/margot.PNG' },
+    { id: '5', name: '闫晗', image: '/yanhan.PNG' },
+    { id: '6', name: 'Nicolas', image: '/nicolas.PNG' },
+    { id: '7', name: 'Jessica', image: '/jessica.PNG' },
+    { id: '8', name: 'Sebastien', image: '/sebastien.PNG' },
   ];
 
   const ateliers = [
